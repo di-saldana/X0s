@@ -3,10 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string></string>
+	<string>&quot;This app requires connection to other devices for playing Xs and Os.&quot;</string>
 	<key>NSBonjourServices</key>
 	<array>
-		<string></string>
+		<string>_XAndO._tcp</string>
+		<string>_XAndO._udp</string>
 	</array>
 </dict>
 </plist>

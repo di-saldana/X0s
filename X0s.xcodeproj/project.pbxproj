@@ -14,6 +14,8 @@
 		EF29EFF72C1C6B6400A0FEB0 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF29EFF62C1C6B6400A0FEB0 /* GameView.swift */; };
 		EF29EFFA2C1C6F4C00A0FEB0 /* GameModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF29EFF92C1C6F4C00A0FEB0 /* GameModels.swift */; };
 		EF29EFFE2C1C7E8400A0FEB0 /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF29EFFD2C1C7E8400A0FEB0 /* ViewModifiers.swift */; };
+		EF29F0002C1C82E500A0FEB0 /* GameService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF29EFFF2C1C82E500A0FEB0 /* GameService.swift */; };
+		EF29F0032C1C85F800A0FEB0 /* MPConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF29F0022C1C85F800A0FEB0 /* MPConnectionManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,8 @@
 		EF29EFF92C1C6F4C00A0FEB0 /* GameModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModels.swift; sourceTree = "<group>"; };
 		EF29EFFB2C1C725F00A0FEB0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		EF29EFFD2C1C7E8400A0FEB0 /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
+		EF29EFFF2C1C82E500A0FEB0 /* GameService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameService.swift; sourceTree = "<group>"; };
+		EF29F0022C1C85F800A0FEB0 /* MPConnectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPConnectionManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +66,7 @@
 				EF29EFFC2C1C7E6200A0FEB0 /* Utilities */,
 				EF29EFF82C1C6F3100A0FEB0 /* Models */,
 				EF29EFF32C1C6B2900A0FEB0 /* GameScreen */,
+				EF29F0012C1C85B500A0FEB0 /* MultipeerConnectivity */,
 				EF29EFE52C1C5ECD00A0FEB0 /* AppEntry.swift */,
 				EF29EFE72C1C5ECD00A0FEB0 /* StartView.swift */,
 				EF29EFE92C1C5ECF00A0FEB0 /* Assets.xcassets */,
@@ -82,6 +87,7 @@
 			isa = PBXGroup;
 			children = (
 				EF29EFF62C1C6B6400A0FEB0 /* GameView.swift */,
+				EF29EFFF2C1C82E500A0FEB0 /* GameService.swift */,
 			);
 			path = GameScreen;
 			sourceTree = "<group>";
@@ -100,6 +106,14 @@
 				EF29EFFD2C1C7E8400A0FEB0 /* ViewModifiers.swift */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		EF29F0012C1C85B500A0FEB0 /* MultipeerConnectivity */ = {
+			isa = PBXGroup;
+			children = (
+				EF29F0022C1C85F800A0FEB0 /* MPConnectionManager.swift */,
+			);
+			path = MultipeerConnectivity;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -172,9 +186,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EF29F0032C1C85F800A0FEB0 /* MPConnectionManager.swift in Sources */,
 				EF29EFFE2C1C7E8400A0FEB0 /* ViewModifiers.swift in Sources */,
 				EF29EFE82C1C5ECD00A0FEB0 /* StartView.swift in Sources */,
 				EF29EFFA2C1C6F4C00A0FEB0 /* GameModels.swift in Sources */,
+				EF29F0002C1C82E500A0FEB0 /* GameService.swift in Sources */,
 				EF29EFF72C1C6B6400A0FEB0 /* GameView.swift in Sources */,
 				EF29EFE62C1C5ECD00A0FEB0 /* AppEntry.swift in Sources */,
 			);
