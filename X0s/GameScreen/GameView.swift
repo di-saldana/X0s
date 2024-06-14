@@ -21,7 +21,8 @@ struct GameView: View {
                 .buttonStyle(.bordered)
             }
         }
-        .navigationTitle("X0s")
+        .navigationTitle("Xs and Os")
+        .inNavigationStack()
     }
 }
 

@@ -7,6 +7,17 @@
 
 import SwiftUI
 
+enum GameType {
+    case peer
+    
+    var description: String {
+        switch self {
+        case .peer:
+            "Peer mode"
+        }
+    }
+}
+
 enum GamePiece: String {
     case x, o
     var image: Image {

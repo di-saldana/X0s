@@ -8,16 +8,29 @@
 import SwiftUI
 
 struct StartView: View {
+    @State private var gameType: GameType = .peer
     @State private var yourName = ""
-    @State private var opponentName = ""
+    @State private var opponentNamer = ""
     @State private var startGame = false
     @FocusState private var focus: Bool
     
     var body: some View {
         VStack {
-            Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+            Button("Start Game") {
+                focus = false
+                startGame.toggle()
+            }
+            .buttonStyle(.borderedProminent)
+            .disabled(/*@START_MENU_TOKEN@*/true/*@END_MENU_TOKEN@*/)
+            
+            Spacer()
         }
         .padding()
+        .navigationTitle("Xs and Os")
+        .fullScreenCover(isPresented: $startGame, content: {
+            GameView()
+        })
+        .inNavigationStack()
     }
 }
 
