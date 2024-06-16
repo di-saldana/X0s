@@ -8,32 +8,42 @@
 import SwiftUI
 
 struct StartView: View {
+    @EnvironmentObject var game: GameService
+    @StateObject var connectionManager: MPConnectionManager
     @State private var gameType: GameType = .peer
-    @State private var yourName = ""
-    @State private var opponentNamer = ""
+    @State private var opponentName = ""
     @State private var startGame = false
     @FocusState private var focus: Bool
     
+    init(yourName: String) {
+        _connectionManager = StateObject(wrappedValue: MPConnectionManager(yourName: UIDevice.current.name))
+    }
+    
     var body: some View {
         VStack {
-            Button("Start Game") {
-                focus = false
-                startGame.toggle()
+            VStack {
+                switch gameType {
+                case .peer:
+                    MPPeersView(startGame: $startGame)
+                        .environmentObject(connectionManager)
+                }
             }
-            .buttonStyle(.borderedProminent)
-            .disabled(/*@START_MENU_TOKEN@*/true/*@END_MENU_TOKEN@*/)
-            
-            Spacer()
+            .padding()
+            .textFieldStyle(.roundedBorder)
+            .focused($focus)
+            .frame(width: 350)
+        Spacer()
         }
         .padding()
-        .navigationTitle("Xs and Os")
-        .fullScreenCover(isPresented: $startGame, content: {
+        .fullScreenCover(isPresented: $startGame) {
             GameView()
-        })
+                .environmentObject(connectionManager)
+        }
         .inNavigationStack()
     }
 }
 
 #Preview {
-    StartView()
+    StartView(yourName: UIDevice.current.name)
+        .environmentObject(GameService())
 }

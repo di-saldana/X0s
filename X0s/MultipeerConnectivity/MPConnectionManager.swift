@@ -18,6 +18,12 @@ class MPConnectionManager: NSObject, ObservableObject {
     let nearbyServiceAdvertiser: MCNearbyServiceAdvertiser
     let nearbyServiceBrowser: MCNearbyServiceBrowser
     
+    var game: GameService?
+
+    func setup(game: GameService) {
+        self.game = game
+    }
+    
     @Published var availablePeers = [MCPeerID]()
     @Published var receivedInvite: Bool = false
     @Published var receivedInviteFrom: MCPeerID?
@@ -28,23 +34,28 @@ class MPConnectionManager: NSObject, ObservableObject {
         didSet {
             if isAvailableToPlay {
                 startAdvertising()
+//                startBrowsing() //
             } else {
                 stopAdvertising()
+//                stopBrowsing() //
             }
         }
     }
     
     init(yourName: String) {
-        myPeerId = MCPeerID(displayName: yourName)
+//        myPeerId = MCPeerID(displayName: yourName)
+        
+        let deviceName = UIDevice.current.name
+        myPeerId = MCPeerID(displayName: deviceName)
         session = MCSession(peer: myPeerId)
         nearbyServiceAdvertiser = MCNearbyServiceAdvertiser(peer: myPeerId, discoveryInfo: nil, serviceType: serviceType)
         nearbyServiceBrowser = MCNearbyServiceBrowser(peer: myPeerId, serviceType: serviceType)
         super.init()
         session.delegate = self
-        nearbyServiceBrowser.delegate = self
+        nearbyServiceAdvertiser.delegate = self
         nearbyServiceBrowser.delegate = self
     }
-    
+
     deinit {
         stopBrowsing()
         stopAdvertising()
@@ -66,10 +77,23 @@ class MPConnectionManager: NSObject, ObservableObject {
         nearbyServiceBrowser.stopBrowsingForPeers()
         availablePeers.removeAll()
     }
+    
+    func send(gameMove: MPGameMove) {
+        if !session.connectedPeers.isEmpty {
+            do {
+                if let data = gameMove.data() {
+                    try session.send(data, toPeers: session.connectedPeers, with: .reliable)
+                }
+            } catch {
+                print("error sending \(error.localizedDescription)")
+            }
+        }
+    }
 }
 
 extension MPConnectionManager: MCNearbyServiceBrowserDelegate {
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
+        print("Peer encontrado: \(peerID.displayName)")
         DispatchQueue.main.async {
             if !self.availablePeers.contains(peerID) {
                 self.availablePeers.append(peerID)
@@ -79,7 +103,7 @@ extension MPConnectionManager: MCNearbyServiceBrowserDelegate {
     
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
         guard let index = availablePeers.firstIndex(of: peerID) else { return }
-        
+        print("Peer perdido: \(peerID.displayName)")
         DispatchQueue.main.async {
             self.availablePeers.remove(at: index)
         }
@@ -88,6 +112,7 @@ extension MPConnectionManager: MCNearbyServiceBrowserDelegate {
 
 extension MPConnectionManager: MCNearbyServiceAdvertiserDelegate {
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
+        print("Invitacion recibida de peer: \(peerID.displayName)")
         DispatchQueue.main.async {
             self.receivedInvite = true
             self.receivedInviteFrom = peerID
@@ -100,16 +125,19 @@ extension MPConnectionManager: MCSessionDelegate {
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         switch state {
         case .notConnected:
+            print("Peer \(peerID.displayName) desconectado")
             DispatchQueue.main.async {
                 self.paired = false
                 self.isAvailableToPlay = true
             }
         case .connected:
+            print("Peer \(peerID.displayName) conectado")
             DispatchQueue.main.async {
                 self.paired = true
                 self.isAvailableToPlay = false
             }
         default:
+            print("Peer \(peerID.displayName) cambio estado: \(state)")
             DispatchQueue.main.async {
                 self.paired = false
                 self.isAvailableToPlay = true
@@ -118,18 +146,33 @@ extension MPConnectionManager: MCSessionDelegate {
     }
     
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        <#code#>
+        if let gameMove = try? JSONDecoder().decode(MPGameMove.self, from: data) {
+            DispatchQueue.main.async {
+                switch gameMove.action {
+                    case .start:
+                        guard let playerName = gameMove.playerName else { return }
+                        if self.game?.player1.name == playerName {
+                            self.game?.player1.isCurrent = true
+                        } else {
+                            self.game?.player2.isCurrent = true
+                        }
+                    case .move:
+                        if let index = gameMove.index {
+                            self.game?.makeMove(at: index)
+                        }
+                    case .reset:
+                        self.game?.reset()
+                    case .end:
+                        self.session.disconnect()
+                        self.isAvailableToPlay = true
+                }
+            }
+        }
     }
     
-    func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
-        <#code#>
-    }
+    func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {}
     
-    func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {
-        <#code#>
-    }
+    func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {}
     
-    func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: (any Error)?) {
-        <#code#>
-    }
+    func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: (any Error)?) {}
 }

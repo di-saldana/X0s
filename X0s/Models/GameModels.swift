@@ -13,7 +13,7 @@ enum GameType {
     var description: String {
         switch self {
         case .peer:
-            "Peer mode"
+            "Invita a alguien cerca de ti que tenga esta app abierta para jugar."
         }
     }
 }
@@ -41,8 +41,7 @@ enum Move {
 
 struct Player {
     let gamePiece: GamePiece
-    let name: String
-    
+    var name: String
     var moves: [Int] = []
     var isCurrent = false
     
