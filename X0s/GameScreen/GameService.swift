@@ -14,10 +14,11 @@ class GameService: ObservableObject {
     @Published var possibleMoves = Move.all
     @Published var gameOver = false
     @Published var gameBoard = GameSquare.reset
+    @Published var isThinking = false
     
     var gameType = GameType.peer
     
-    var currentPlayer1: Player {
+    var currentPlayer: Player {
         if player1.isCurrent {
             return player1
         } else {
@@ -25,31 +26,20 @@ class GameService: ObservableObject {
         }
     }
     
-    var currentPlayer: Player {
-        player1.isCurrent ? player1 : player2
-    }
-    
     var gameStarted: Bool {
         player1.isCurrent || player2.isCurrent
     }
     
     var boardDisabled: Bool {
-        gameOver || !gameStarted
+        gameOver || !gameStarted || isThinking
     }
     
-    func setupGame1(gameType: GameType, player1Name: String, player2Name: String) {
+    func setupGame(gameType: GameType, player1Name: String, player2Name: String) {
         switch gameType {
         case .peer:
             self.gameType = .peer
         }
         player1.name = player1Name
-    }
-    
-    func setupGame(gameType: GameType, player1Name: String, player2Name: String) {
-        self.gameType = gameType
-        player1.name = player1Name
-        player2.name = player2Name
-        reset()  // Ensure the game is reset whenever it's set up
     }
     
     func reset() {
@@ -99,5 +89,16 @@ class GameService: ObservableObject {
                 gameOver = true
             }
         }
+    }
+    
+    func deviceMove() async {
+        isThinking.toggle()
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        if let move = possibleMoves.randomElement() {
+            if let matchingIndex = Move.all.firstIndex(where: {$0 == move}) {
+                makeMove(at: matchingIndex)
+            }
+        }
+        isThinking.toggle()
     }
 }

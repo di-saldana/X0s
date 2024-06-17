@@ -11,12 +11,16 @@ struct StartView: View {
     @EnvironmentObject var game: GameService
     @StateObject var connectionManager: MPConnectionManager
     @State private var gameType: GameType = .peer
+    @AppStorage("yourName") var yourName = ""
     @State private var opponentName = ""
-    @State private var startGame = false
     @FocusState private var focus: Bool
+    @State private var startGame = false
+    @State private var changeName = false
+    @State private var newName = ""
     
     init(yourName: String) {
-        _connectionManager = StateObject(wrappedValue: MPConnectionManager(yourName: UIDevice.current.name))
+        self.yourName = yourName
+        _connectionManager = StateObject(wrappedValue: MPConnectionManager(yourName: yourName))
     }
     
     var body: some View {
@@ -32,7 +36,7 @@ struct StartView: View {
             .textFieldStyle(.roundedBorder)
             .focused($focus)
             .frame(width: 350)
-        Spacer()
+            Spacer()
         }
         .padding()
         .fullScreenCover(isPresented: $startGame) {

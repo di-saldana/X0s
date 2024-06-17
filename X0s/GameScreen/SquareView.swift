@@ -14,7 +14,9 @@ struct SquareView: View {
     
     var body: some View {
         Button {
-//            game.makeMove(at: index)
+            if !game.isThinking {
+                game.makeMove(at: index)
+            }
             if game.gameType == .peer {
                 let gameMove = MPGameMove(action: .move, playerName: connectionManager.myPeerId.displayName, index: index)
                 connectionManager.send(gameMove: gameMove)
@@ -34,4 +36,3 @@ struct SquareView: View {
         .environmentObject(GameService())
         .environmentObject(MPConnectionManager(yourName: UIDevice.current.name))
 }
-

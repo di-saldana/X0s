@@ -29,7 +29,8 @@ struct MPPeersView: View {
                     }
                     .buttonStyle(.borderedProminent)
                 }
-                .alert("Alerta recibida de \(connectionManager.receivedInviteFrom?.displayName ?? "Desconocido")", isPresented: $connectionManager.receivedInvite) {
+                .alert("Invitación recibida de \(connectionManager.receivedInviteFrom?.displayName ?? "Desconocido")",
+                       isPresented: $connectionManager.receivedInvite) {
                     Button("Aceptar") {
                         print("Invitacion aceptada de peer: \(connectionManager.receivedInviteFrom?.displayName ?? "Desconocido")")
                         if let invitationHandler = connectionManager.invitationHandler {
@@ -51,16 +52,14 @@ struct MPPeersView: View {
         .onAppear {
             connectionManager.isAvailableToPlay = true
             connectionManager.startBrowsing()
-            print("Started browsing")
         }
         .onDisappear {
             connectionManager.stopBrowsing()
             connectionManager.stopAdvertising()
             connectionManager.isAvailableToPlay = false
-            print("Stopped browsing")
         }
-        .onChange(of: connectionManager.paired) { // newValue in
-            startGame = connectionManager.paired // newValue
+        .onChange(of: connectionManager.paired) {
+            startGame = connectionManager.paired
         }
     }
 }
