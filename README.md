@@ -8,4 +8,7 @@ X0s es juego que utiliza la tecnología de MultipeerConnectivity para permitir a
 - TODO
 
 ## Dificultades encontradas y cómo se han resuelto
-- TODOS
+- TODO
+
+## Preview
+[![Watch the video](https://img.youtube.com/vi/Rm-bGl21HuA/maxresdefault.jpg)](https://youtu.be/Rm-bGl21HuA)
